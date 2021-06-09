@@ -1,0 +1,189 @@
+register:
+  - title: '未注册的用户名（6位长度用户名与密码）与邮箱注册_注册成功'
+    data:
+      username: '#len_six_user_name#'  # 随机生成数据库test.auth_user表中不存的六位长度的用户名进行替换
+      email: '#email#'
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 201}
+    sql: "select username, email FROM test.auth_user ORDER BY id desc LIMIT 0,1;"
+
+  - title: '未注册的用户名（20位长度用户名与密码）与邮箱注册_注册成功'
+    data:
+      username: '#len_twenty_user_name#'
+      email: '#email#'
+      password: '12345abcde.@$123456+'
+      password_confirm: '12345abcde.@$123456+'
+    expect: {"status_code": 201}
+    sql: "select username, email FROM test.auth_user ORDER BY id desc LIMIT 0,1;"
+
+  - title: '已注册的用户名(未注册邮箱)注册_注册失败'
+    data:
+      username: '#old_user_name#'    # 从数据库test.auth_user表中查询最大id记录的username进行替换
+      email: '#email#'
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"username": ["已存在一位使用该名字的用户。"]}}
+    sql: ""
+
+  - title: '注册名长度<6位注册_注册失败'
+    data:
+      username: 'kekek'
+      email: '#email#'
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"username": ["仅允许6-20个字符的用户名"]}}
+    sql: ""
+
+  - title: '注册名长度>20位注册_注册失败'
+    data:
+      username: 'kekekkekekkekekkekekk'
+      email: '#email#'
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"username": ["仅允许6-20个字符的用户名"]}}
+    sql: ""
+
+  - title: '注册名为空_注册失败'
+    data:
+      username: ''
+      email: '#email#'
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"username": ["该字段不能为空。"]}}
+    sql: ""
+
+  - title: '已注册的邮箱_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: '#old_email#'   # 从数据库test.auth_user表中查询最大id记录的email数据进行替换
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"email": ["此邮箱已注册"]}}
+    sql: ""
+
+  - title: '不符合标准格式的邮箱注册_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: '84351224qq.com'
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"email": ["请输入合法的邮件地址。"]}}
+    sql: ""
+
+  - title: '邮箱为空_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: ''
+      password: '123456'
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"email": ["该字段不能为空。"]}}
+    sql: ""
+
+  - title: '密码长度<6位_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: '#email#'
+      password: '12345'
+      password_confirm: '12345'
+    expect: {"status_code": 400, "msg": {"password": ["仅允许6-20个字符的密码"],"password_confirm": ["仅允许6~20个字符的确认密码"]}}
+    sql: ""
+
+  - title: '密码长度>20位_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: '#email#'
+      password: '123451234512345123456'
+      password_confirm: '123451234512345123456'
+    expect: {"status_code": 400, "msg": {"password": ["仅允许6-20个字符的密码"],"password_confirm": ["仅允许6~20个字符的确认密码"]}}
+    sql: ""
+
+  - title: '密码与确认密码不一致_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: '#email#'
+      password: '123456'
+      password_confirm: '1234567'
+    expect: {"status_code": 400, "msg": {"non_field_errors": ["两次输入密码不正确"]}}
+    sql: ""
+
+  - title: '密码为空_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: '#email#'
+      password: ''
+      password_confirm: '123456'
+    expect: {"status_code": 400, "msg": {"password": ["该字段不能为空。"]}}
+    sql: ""
+
+  - title: '确认密码为空_注册失败'
+    data:
+      username: '#len_six_user_name#'
+      email: '#email#'
+      password: '123456'
+      password_confirm: ''
+    expect: {"status_code": 400, "msg": {"password_confirm": ["该字段不能为空。"]}}
+    sql: ""
+
+check_username_register:
+  - title: '判断已注册的用户名_已注册'
+    data:
+      username: '#old_user_name#'
+    expect: {"status_code": 200, "count": 1}
+    sql: "select * from test.auth_user where username='#username#';"
+
+  - title: '判断未注册的用户名_未注册'
+    data:
+      username: '#len_six_user_name#'
+    expect: {"status_code": 200, "count": 0}
+    sql: "select * from test.auth_user where username='#username#';"
+
+check_email_register:
+  - title: '判断已注册的邮箱_已注册'
+    data:
+      email: '#old_email#'
+    expect: {"status_code": 200, "count": 1}
+    sql: "select * from test.auth_user where email='#email#';"
+
+  - title: '判断未注册的邮箱_未注册'
+    data:
+      email: '#email#'
+    expect: {"status_code": 200, "count": 0}
+    sql: "select * from test.auth_user where email='#email#';"
+
+login:
+  - title: '已注册的用户名登录_登录成功'
+    data:
+      username: '#username#'
+      password: '#password#'
+    expect: {"status_code": 200}
+    sql: ""
+
+  - title: '未注册的用户名登录_登录失败'
+    data:
+      username: '#len_six_user_name#'
+      password: '123456'
+    expect: {"status_code": 400, "msg": {"non_field_errors": ["无法使用提供的认证信息登录。"]}}
+    sql: ""
+
+  - title: '密码错误_登录失败'
+    data:
+      username: '#username#'
+      password: '1234567'
+    expect: {"status_code": 400, "msg": {"non_field_errors": ["无法使用提供的认证信息登录。"]}}
+    sql: ""
+
+  - title: '用户名为空_登录失败'
+    data:
+      username: ''
+      password: '1234567'
+    expect: {"status_code": 400, "msg": {"username": ["该字段不能为空。"]}}
+    sql: ""
+
+  - title: '密码为空_登录失败'
+    data:
+      username: '#username#'
+      password: ''
+    expect: {"status_code": 400, "msg": {"password": ["该字段不能为空。"]}}
+    sql: ""
+

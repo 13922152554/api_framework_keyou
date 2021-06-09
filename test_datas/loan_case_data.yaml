@@ -1,0 +1,589 @@
+projects:
+  - title: '所有参数均正确创建项目_创建项目成功'
+    data: &add_project
+      name: '#len_one_str#'     # 长度为1的字符串
+      leader: 'a'
+      tester: 'b'
+      programmer: 'c'
+      publish_app: 'd'
+      desc: 'e'
+    expect: {"status_code": 201}
+    sql: 'select name, leader, tester, programmer, publish_app, `desc` from test.tb_projects ORDER BY id desc LIMIT 0,1'
+
+  - title: '必填参数均正确创建项目_创建项目成功'
+    data:
+      name: '#len_two_hundred_str#'     # 长度为200的字符串
+      leader: '#len_fifty_str#'
+      tester: '#len_fifty_str#'
+      programmer: '#len_fifty_str#'    # 长度为50的字符串
+      publish_app: '#len_hundred_str#'     # 长度为200的字符串
+    expect: {"status_code": 201}
+    sql: 'select name, leader, tester, programmer, publish_app from test.tb_projects ORDER BY id desc LIMIT 0,1'
+
+  - title: '简要描述为空_创建项目成功'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: 'b'
+      programmer: 'c'
+      publish_app: '#len_hundred_str#'     # 长度大于100的字符串
+      desc: ''
+    expect: {"status_code": 201}
+    sql: ''
+
+  - title: '项目名称已存在创建创建_创建项目失败'
+    data:
+      name: '#old_project_name#'
+      leader: '#len_fifty_str#'
+      tester: '#len_fifty_str#'
+      programmer: '#len_fifty_str#'
+      publish_app: '#len_hundred_str#'
+    expect: {"status_code": 400, "msg": {"name": ["具有 项目名称 的 项目信息 已存在。"]}}
+    sql: ''
+
+  - title: '项目名称为空_创建项目失败'
+    data:
+      name: ''
+      leader: '#len_fifty_str#'
+      tester: '#len_fifty_str#'
+      programmer: '#len_fifty_str#'
+      publish_app: '#len_hundred_str#'
+    expect: {"status_code": 400, "msg": {"name": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '项目名称为纯空格字符_创建项目失败'
+    data:
+      name: ''
+      leader: '#len_fifty_str#'
+      tester: '#len_fifty_str#'
+      programmer: '#len_fifty_str#'
+      publish_app: '#len_hundred_str#'
+    expect: {"status_code": 400, "msg": {"name": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '项目名称长度>200_创建项目失败'
+    data:
+      name: '#len_max_two_hundred_str#'      # 长度大于200的字符串
+      leader: 'a'
+      tester: 'b'
+      programmer: 'c'
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"name": ["请确保这个字段不能超过 200 个字符。"]}}
+    sql: ''
+
+  - title: '项目负责人为空_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: ''
+      tester: 'b'
+      programmer: 'c'
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"leader": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '项目负责人为纯空格字符_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: '  '
+      tester: 'b'
+      programmer: 'c'
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"leader": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '项目负责人长度>50_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: '#len_max_fifty_str#'   # 长度大于50的字符串
+      tester: 'b'
+      programmer: 'c'
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"leader": ["请确保这个字段不能超过 50 个字符。"]}}
+    sql: ''
+
+  - title: '项目测试人员为空_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: ''
+      programmer: 'c'
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"tester": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '项目测试人员为空_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: '  '
+      programmer: 'c'
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"tester": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '项目测试人员长度>50_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: '#len_max_fifty_str#'
+      programmer: 'c'
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"tester": ["请确保这个字段不能超过 50 个字符。"]}}
+    sql: ''
+
+  - title: '开发人员为空_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: 'b'
+      programmer: ''
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"programmer": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '开发人员为空_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: 'b'
+      programmer: '  '
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"programmer": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '开发长度>50_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: 'b'
+      programmer: '#len_max_hundred_str#'    # 长度大于100的字符串
+      publish_app: 'd'
+    expect: {"status_code": 400, "msg": {"programmer": ["请确保这个字段不能超过 50 个字符。"]}}
+    sql: ''
+
+  - title: '发布应用为空_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: 'b'
+      programmer: 'c'
+      publish_app: ''
+    expect: {"status_code": 400, "msg": {"publish_app": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '发布应用为空_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: 'b'
+      programmer: 'c'
+      publish_app: '  '
+    expect: {"status_code": 400, "msg": {"publish_app": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '简要描述长度>200_创建项目失败'
+    data:
+      name: '#len_one_str#'
+      leader: 'a'
+      tester: 'b'
+      programmer: 'c'
+      publish_app: 'd'
+      desc: '#len_max_two_hundred_str#'
+    expect: {"status_code": 400, "msg": {"desc": ["请确保这个字段不能超过 200 个字符。"]}}
+    sql: ''
+
+interfaces:
+  - title: '所有参数均正确_创建接口成功'
+    project_data:
+      <<: *add_project
+    interface_data: &add_interface
+      name: '#len_one_str#'
+      tester: 'a'
+      project_id: '#project_id#'
+      desc: 'b'
+    expect: {"status_code": 201, "msg": {"name": "#name#", "project_id": "#project_id#"}}
+    sql: 'select name,  project_id from test.tb_interfaces ORDER BY id desc limit 0,1;'
+
+  - title: '必传参数均正确_创建接口成功'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#len_two_hundred_str#'
+      tester: '#len_fifty_str#'
+      project_id: '#project_id#'
+    expect: {"status_code": 201, "msg": {"name": '#name#', "project_id": "#project_id#"}}
+    sql: 'select name, project_id from test.tb_interfaces ORDER BY id desc limit 0,1;'
+
+  - title: '简要描述为空_创建接口成功'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#len_one_str#'
+      tester: 'a'
+      project_id: '#project_id#'     # 不存在的project_id
+      desc: ''
+    expect: {"status_code": 201, "msg": {"name": "#name#", "project_id": "#project_id#"}}
+    sql: ''
+
+  - title: '接口名为空_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: ''
+      tester: 'a'
+      project_id: '#project_id#'
+    expect: {"status_code": 400, "msg": {"name": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '接口名为纯空格字符_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: ''
+      tester: 'a'
+      project_id: '#project_id#'
+    expect: {"status_code": 400, "msg": {"name": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '接口名长度>200_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#len_max_two_hundred_str#'
+      tester: 'a'
+      project_id: '#project_id#'
+    expect: {"status_code": 400, "msg": {"name": ["请确保这个字段不能超过 200 个字符。"]}}
+    sql: ''
+
+  - title: '已存在的接口名_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#old_interface_name#'
+      tester: 'a'
+      project_id: '#project_id#'
+    expect: {"status_code": 400, "msg": {"name": ["具有 接口名称 的 接口信息 已存在。"]}}
+    sql: ''
+
+  - title: '测试人员为空_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#len_one_str#'
+      tester: ''
+      project_id: '#project_id#'
+    expect: {"status_code": 400, "msg": {"tester": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '测试人员为纯空格字符_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#len_one_str#'
+      tester: '  '
+      project_id: '#project_id#'
+    expect: {"status_code": 400, "msg": {"tester": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '测试人员长度>50_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#len_one_str#'
+      tester: '#len_max_fifty_str#'
+      project_id: '#project_id#'
+    expect: {"status_code": 400, "msg": {"tester": ["请确保这个字段不能超过 50 个字符。"]}}
+    sql: ''
+
+  - title: '项目id为空_创建接口失败'
+    interface_data:
+      name: '#len_one_str#'
+      tester: 'a'
+      project_id: ''
+    expect: {"status_code": 400, "msg": {"project_id": ["该字段不能为 null。"]}}
+    sql: ''
+
+  - title: '不存在的项目id_创建接口失败'
+    interface_data:
+      name: '#len_one_str#'
+      tester: 'a'
+      project_id: 1000     # 不存在的project_id
+    expect: {"status_code": 400, "msg": {"project_id": ["无效主键 “1000” － 对象不存在。"]}}
+    sql: ''
+
+  - title: '简要描述长度>200_创建接口失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      name: '#len_one_str#'
+      tester: 'a'
+      project_id: '#project_id#'     # 不存在的project_id
+      desc: '#len_max_two_hundred_str#'
+    expect: {"status_code": 400, "msg": {"desc": ["请确保这个字段不能超过 200 个字符。"]}}
+    sql: ''
+
+testcases:
+  - title: '所有参数均正确_创建用例成功'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_one_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}   # pid:项目id  iid：接口id
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 201, "msg": {"name": "#name#", "interface": "#interface#"}}
+    'sql': 'select interface_id, name, author from test.tb_testcases ORDER BY id desc LIMIT 0,1;'
+
+  - title: '必传参数均正确_创建用例成功'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      author: '#len_fifty_str#'
+      request: 'c'
+    expect: {"status_code": 201, "msg": {"name": "#name#", "interface": "#interface#"}}
+    sql: ''
+
+  - title: '用例执行前置顺序为空_创建用例成功'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: ''
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 201, "msg": {"name": "#name#", "interface": "#interface#"}}
+    sql: ''
+
+  - title: '已存在的用例名_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#old_testcase_name#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"name": ["具有 用例名称 的 用例信息 已存在。"]}}
+    sql: ''
+
+  - title: '用例名为空_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: ''
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"name": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '用例名为纯空格字符_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '  '
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"name": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '用例名长度>50_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_max_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {'name': ['请确保这个字段不能超过 50 个字符。']}}
+    sql: ''
+
+  - title: '所属接口和项目信息为空_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "", "iid": ""}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {'iid': ['请填写合法的整数值。'], 'pid': ['请填写合法的整数值。']}}}
+    sql: ''
+
+  - title: '所属接口和项目信息为纯空格字符_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "  ", "iid": "  "}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {'iid': ['请填写合法的整数值。'], 'pid': ['请填写合法的整数值。']}}}
+    sql: ''
+
+  - title: '所属项目为空_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "", "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {"pid": ["请填写合法的整数值。"]}}}
+    sql: ''
+
+  - title: '所属项目为空格字符_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "  ", "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {"pid": ["请填写合法的整数值。"]}}}
+    sql: ''
+
+  - title: '所属项目不存在_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": 1000, "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {"pid": ["所选项目不存在!"]}}}
+    sql: ''
+
+  - title: '所属接口为空_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": ""}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {"iid": ["请填写合法的整数值。"]}}}
+    sql: ''
+
+  - title: '所属接口不存在_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": 1000}
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {"iid": ["所选接口不存在!"]}}}
+    sql: ''
+
+  - title: '非所属项目下的接口_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#min_interface_id#"}   # min_interface_id：查询最新项目ID下的最大interface_id 再减1
+      include: 'a'
+      author: 'b'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"interface": {"non_field_errors": ["项目和接口信息不对应!"]}}}
+    sql: ''
+
+  - title: '编写人员为空_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: ''
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"author": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '编写人员为纯空格字符_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: '  '
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"author": ["该字段不能为空。"]}}
+    sql: ''
+
+  - title: '编写人员长度>50_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: '#len_max_fifty_str#'
+      request: 'c'
+    expect: {"status_code": 400, "msg": {"author": ["请确保这个字段不能超过 50 个字符。"]}}
+    sql: ''
+
+  - title: '请求信息为空_创建用例失败'
+    project_data:
+      <<: *add_project
+    interface_data:
+      <<: *add_interface
+    testcase_data:
+      name: '#len_fifty_str#'
+      interface: {"pid": "#project_id#", "iid": "#id#"}
+      include: 'a'
+      author: 'b'
+      request: ''
+    expect: {"status_code": 400, "msg": {"request": ["该字段不能为空。"]}}
+    sql: ''

@@ -1,0 +1,28 @@
+env:
+  host: 'http://api.keyou.site:8000'
+
+account:
+  username: "Rachel"
+  password: "123456"
+
+other_account:
+  mobile_phone: '13980841494'
+  pwd: 'admin123'
+
+mysql:
+  host: 'www.keyou.site'
+  user: 'lemon520'
+  database: 'test'
+  password: '123456'
+  port: 13306
+
+member_api:
+  register: '/user/register/'
+  check_username_register: '/user/#username#/count/'    # 判断用户名是否已注册接口
+  check_email_register: '/user/#email#/count/'   # 判断邮箱是否已注册接口
+  login: '/user/login/'
+
+loan_api:
+  projects: '/projects/'
+  interfaces: '/interfaces/'
+  testcases: '/testcases/'
